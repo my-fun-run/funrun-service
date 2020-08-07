@@ -14,8 +14,8 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.R
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 
 /**
- * Provides a framework for managing JavaFX and activates when the application is starting,
- * before any other application objects have been created.
+ * Provides a framework for managing JavaFX and activates when the application is starting, before
+ * any other application objects have been created.
  */
 @SpringBootApplication
 @EnableWebSecurity
@@ -28,6 +28,7 @@ public class FunRunServiceApplication extends ResourceServerConfigurerAdapter {
 
   /**
    * Invokes method in order to run.
+   *
    * @param args arguments passed at command line
    */
   public static void main(String[] args) {
@@ -46,16 +47,18 @@ public class FunRunServiceApplication extends ResourceServerConfigurerAdapter {
         .antMatchers(HttpMethod.POST, "/events").hasRole("USER")
         .antMatchers(HttpMethod.PUT, "/events/**").hasRole("USER")
         .antMatchers(HttpMethod.DELETE, "/events/**").hasRole("USER")
+        .antMatchers(HttpMethod.GET, "/events/**").hasRole("USER")
         .antMatchers(HttpMethod.POST, "/histories").hasRole("USER")
         .antMatchers(HttpMethod.PUT, "/histories/**").hasRole("USER")
         .antMatchers(HttpMethod.DELETE, "/histories/**").hasRole("USER")
+        .antMatchers(HttpMethod.GET, "/histories/**").hasRole("USER")
         .antMatchers(HttpMethod.POST, "/comments").hasRole("USER")
         .antMatchers(HttpMethod.PUT, "/comments/**").hasRole("USER")
         .antMatchers(HttpMethod.DELETE, "/comments/**").hasRole("USER")
+        .antMatchers(HttpMethod.GET, "/comments/**").hasRole("USER")
         .antMatchers(HttpMethod.POST, "/users").hasRole("USER")
         .antMatchers(HttpMethod.PUT, "/users/**").hasRole("USER")
         .antMatchers(HttpMethod.DELETE, "/users/**").hasRole("USER")
-        .antMatchers(HttpMethod.GET, "/users/me").permitAll()
         .antMatchers(HttpMethod.GET, "/users/**").hasRole("USER")
         .anyRequest().permitAll();
 
