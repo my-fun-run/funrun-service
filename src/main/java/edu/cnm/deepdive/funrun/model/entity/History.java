@@ -60,7 +60,7 @@ public class History implements FlatHistory {
   private User user;
 
   @ManyToOne(fetch = FetchType.EAGER,
-      cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
+      cascade = {CascadeType.DETACH, CascadeType.REFRESH})
   @JoinColumn(name = "event_id", nullable = true)
   private Event event;
 

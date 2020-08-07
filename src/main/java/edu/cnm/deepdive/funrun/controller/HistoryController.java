@@ -3,6 +3,7 @@ package edu.cnm.deepdive.funrun.controller;
 import edu.cnm.deepdive.funrun.model.entity.History;
 import edu.cnm.deepdive.funrun.model.entity.User;
 import edu.cnm.deepdive.funrun.service.CommentRepository;
+import edu.cnm.deepdive.funrun.service.EventRepository;
 import edu.cnm.deepdive.funrun.service.HistoryRepository;
 import edu.cnm.deepdive.funrun.service.UserService;
 import java.util.NoSuchElementException;
@@ -33,21 +34,23 @@ public class HistoryController {
 
   private final HistoryRepository historyRepository;
   private final CommentRepository commentRepository;
+  private final EventRepository eventRepository;
   private final UserService userService;
 
   /**
    * Creates a new instance of history class.
-   *
-   * @param historyRepository
+   *  @param historyRepository
    * @param commentRepository
+   * @param eventRepository
    * @param userService
    */
   @Autowired
   public HistoryController(HistoryRepository historyRepository,
       CommentRepository commentRepository,
-      UserService userService) {
+      EventRepository eventRepository, UserService userService) {
     this.historyRepository = historyRepository;
     this.commentRepository = commentRepository;
+    this.eventRepository = eventRepository;
 
     this.userService = userService;
   }
@@ -74,10 +77,16 @@ public class HistoryController {
   @PostMapping(
       consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<History> post(@RequestBody History history, Authentication auth) {
-    User user = userService.getCurrentUser(auth);
-    history.setUser(user);
-    historyRepository.save(history);
-    return ResponseEntity.created(history.getHref()).body(history);
+    return userService.get(auth)
+        .map((user) -> {
+          history.setUser(user);
+          if (history.getEvent() != null) {
+            history.setEvent(eventRepository.findById(history.getEvent().getId()).orElse(null));
+          }
+          historyRepository.save(history);
+          return ResponseEntity.created(history.getHref()).body(history);
+        })
+        .orElseThrow(NoSuchElementException::new);
   }
 
   /**
